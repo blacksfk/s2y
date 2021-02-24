@@ -1,0 +1,9 @@
+{
+	"discord": {
+		"token": "<your_discord_bot_token>"
+	},
+	"spotify": {
+		"id": "<your_spotify_app_id>",
+		"secret": "<your_spotify_app_secret>"
+	}
+}
