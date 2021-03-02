@@ -5,7 +5,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"strings"
 )
@@ -106,7 +106,7 @@ func performReq(req *http.Request, v interface{}) error {
 		return e
 	}
 
-	body, e := ioutil.ReadAll(res.Body)
+	body, e := io.ReadAll(res.Body)
 
 	if e != nil {
 		return e
