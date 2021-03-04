@@ -1,6 +1,9 @@
-# executable name
-s2y
-s2y.exe
+# executable names
+cmd/s2y/s2y
+cmd/s2y/s2y.exe
+
+cmd/s2y_register/s2y_register
+cmd/s2y_register/s2y_register.exe
 
 # configuration file
 config.json
