@@ -1,6 +1,9 @@
 {
+	"address": "<address_to_listen_on>",
 	"discord": {
-		"token": "<your_discord_bot_token>"
+		"id": "<your_discord_app_client_id>",
+		"publicKey": "<your_discord_app_public_key>",
+		"token": "<your_discord_app_bot_token>"
 	},
 	"spotify": {
 		"id": "<your_spotify_app_id>",
