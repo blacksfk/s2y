@@ -14,6 +14,7 @@ func PerformReq(req *http.Request) ([]byte, error) {
 		return nil, e
 	}
 
+	defer res.Body.Close()
 	body, e := io.ReadAll(res.Body)
 
 	if e != nil {
