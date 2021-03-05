@@ -4,10 +4,10 @@ import (
 	"bytes"
 	"encoding/base64"
 	"encoding/json"
-	"fmt"
-	"io"
 	"net/http"
 	"strings"
+
+	"github.com/blacksfk/s2y/api"
 )
 
 const (
@@ -22,17 +22,6 @@ const (
 type authResponse struct {
 	Access_token, Token_type string
 	Expires_in               int64
-}
-
-// Something went wrong with the request or the server.
-type APIError struct {
-	Message string
-	Status  int
-}
-
-// APIError implements error.
-func (ae *APIError) Error() string {
-	return fmt.Sprintf("%d: %s", ae.Status, ae.Message)
 }
 
 // Public type to be used to get a playlist.
@@ -60,8 +49,14 @@ func NewClient(id, secret string) (*Client, error) {
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 
 	// send the request
+	body, e := api.PerformReq(req)
+
+	if e != nil {
+		return nil, e
+	}
+
 	ar := &authResponse{}
-	e = performReq(req, ar)
+	e = json.Unmarshal(body, ar)
 
 	if e != nil {
 		return nil, e
@@ -91,43 +86,15 @@ func (c *Client) Playlist(id string) (*Playlist, error) {
 	req.Header.Add("Authorization", "Bearer "+c.token)
 
 	// send the request
+	body, e := api.PerformReq(req)
+
+	if e != nil {
+		return nil, e
+	}
+
 	list := &Playlist{}
-	e = performReq(req, list)
 
-	return list, e
-}
-
-// Creates a client and sends the request. v should be a pointer.
-func performReq(req *http.Request, v interface{}) error {
-	client := &http.Client{}
-	res, e := client.Do(req)
-
-	if e != nil {
-		return e
-	}
-
-	body, e := io.ReadAll(res.Body)
-
-	if e != nil {
-		return e
-	}
-
-	if res.StatusCode >= 400 {
-		// something went wrong with the request
-		ae := &APIError{}
-		e = json.Unmarshal(body, ae)
-
-		if e != nil {
-			// busted JSON
-			return e
-		}
-
-		return ae
-	}
-
-	// request was successful
-	// unmarshal into the provided pointer
-	return json.Unmarshal(body, v)
+	return list, json.Unmarshal(body, list)
 }
 
 // Spotify API PlaylistObject.
