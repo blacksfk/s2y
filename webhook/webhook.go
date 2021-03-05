@@ -59,8 +59,14 @@ func (c Client) EditOriginal(i s2y.Interaction, msg EditMsg) error {
 		return e
 	}
 
-	// perform the request with the default client
-	res, e := http.DefaultClient.Do(req)
+	// create an http.Client to allow setting custom headers
+	client := http.Client{}
+
+	// set custom headers
+	req.Header.Add("Content-Type", "application/json")
+
+	// perform the request
+	res, e := client.Do(req)
 
 	if e != nil {
 		return e
