@@ -6,7 +6,7 @@ import (
 
 	uf "github.com/blacksfk/microframework"
 	"github.com/blacksfk/s2y/config"
-	"github.com/blacksfk/s2y/spotify"
+	"github.com/blacksfk/s2y/http"
 	"github.com/husobee/vestigo"
 )
 
@@ -22,8 +22,7 @@ func main() {
 		log.Fatal(e)
 	}
 
-	// create a spotify client
-	client, e := spotify.NewClient(conf.Spotify.ID, conf.Spotify.Secret)
+	services, e := initServices(conf)
 
 	if e != nil {
 		log.Fatal(e)
@@ -48,14 +47,16 @@ func main() {
 	s := uf.NewServer(sConfig)
 
 	// add routes
-	routes(s, conf, client)
+	routes(s, conf, services)
 
 	// anchors aweigh
 	log.Println(s.Start())
 }
 
-func routes(s *uf.Server, conf *config.Config, client *spotify.Client) {
-	// TODO: add routes
+func routes(s *uf.Server, conf *config.Config, services *services) {
+	ctrl := http.NewController(services.sc, services.whc, conf.Discord.PublicKeyBytes())
+
+	s.Post("/", ctrl.Index)
 }
 
 // Error logger supplied to the framework.
