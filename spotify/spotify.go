@@ -139,6 +139,17 @@ type Playlist struct {
 	}
 }
 
+// Unwind the spotify tracks.items.track structure into something usable.
+func (l Playlist) GetTracks() []Track {
+	var tracks []Track
+
+	for _, item := range l.Tracks.Items {
+		tracks = append(tracks, item.Track)
+	}
+
+	return tracks
+}
+
 // Spotify API TrackObject.
 type Track struct {
 	Name    string
